@@ -1,0 +1,278 @@
+
+<html>
+<head>
+    <title>Student Registration Form</title>
+    <style>
+        td {
+            padding: 8px;
+        }
+        .error {
+            color: red;
+            font-size: 0.9em;
+        }
+    </style>
+    <script>
+        function validateForm() {
+            document.querySelectorAll('.error').forEach(error => error.textContent = '');
+
+            let isValid = true;
+
+            const firstName = document.forms[0]["firstName"].value;
+            if (!firstName) {
+                document.getElementById('firstNameError').textContent = 'First Name is required.';
+                isValid = false;
+            }
+
+            const lastName = document.forms[0]["lastName"].value;
+            if (!lastName) {
+                document.getElementById('lastNameError').textContent = 'Last Name is required.';
+                isValid = false;
+            }
+
+            const email = document.forms[0]["email"].value;
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                document.getElementById('emailError').textContent = 'Please enter a valid email address.';
+                isValid = false;
+            }
+
+            const mobileNumber = document.forms[0]["mobileNumber"].value;
+            const mobilePattern = /^\d{10}$/;
+            if (!mobilePattern.test(mobileNumber)) {
+                document.getElementById('mobileError').textContent = 'Mobile Number must be 10 digits.';
+                isValid = false;
+            }
+
+            return isValid;
+        }
+    </script>
+</head>
+<body>
+    <center>
+        <h1>STUDENT REGISTRATION FORM</h1><br>
+        <form onsubmit="return validateForm()">
+            <table border="1" cellpadding="2" width="60%">
+                <tr>
+                    <th>FIRST NAME</th>
+                    <td>
+                        <input type="text" name="firstName" maxlength="30" required>
+                        <span class="error" id="firstNameError"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>LAST NAME</th>
+                    <td>
+                        <input type="text" name="lastName" maxlength="30" required>
+                        <span class="error" id="lastNameError"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>DATE OF BIRTH</th>
+                    <td>
+                     <select>
+ 		     	<option> DAY:</option>
+ 			<option> 1</option>
+ 			<option> 2</option>
+ 			<option> 3</option>
+ 			<option> 4</option>
+ 			<option> 5</option>
+ 			<option> 6</option>
+ 			<option> 7</option>
+ 			<option> 8</option>
+ 			<option> 9</option>
+ 			<option> 10</option>
+ 			<option> 11</option>
+ 			<option> 12</option>
+ 			<option> 13</option>
+ 			<option> 14</option>
+ 			<option> 15</option>
+ 			<option> 16</option>
+ 			<option> 17</option>
+ 			<option> 18</option>
+ 			<option> 19</option>
+ 			<option> 20</option>
+ 			<option> 21</option>
+ 			<option> 22</option>
+ 			<option> 23</option>
+ 			<option> 23</option>
+ 			<option> 25</option>
+ 			<option> 26</option>
+ 			<option> 27</option>
+ 			<option> 28</option>
+ 			<option> 29</option>
+ 			<option> 30</option>
+ 			<option> 31</option>
+ 	
+ 		    </select>
+ 		    <select>
+ 			<option> MONTH:</option>
+ 			<option> JAN</option>
+ 			<option> FEB</option>
+ 			<option> MAR</option>
+ 			<option> APRIL</option>
+ 			<option> MAY</option>
+ 			<option> JUNE</option>
+ 			<option> JULY</option>
+ 			<option> AUGUST</option>
+ 			<option> SEPT</option>
+ 			<option> OCT</option>
+ 			<option> NOV</option>
+ 			<option> DEC</option>
+ 		    </select>
+ 		    <select>
+ 			<option> YEAR:</option>
+ 			<option> 2000</option>
+ 			<option> 2001</option>
+ 			<option> 2002</option>
+ 			<option> 2003</option>
+ 			<option> 2004</option>
+ 			<option> 2005</option>
+ 			<option> 2006</option>
+ 			<option> 2007</option>
+ 			<option> 2008</option>
+ 			<option> 2009</option>
+ 			<option> 2010</option>
+ 			<option> 2011</option>
+ 			<option> 2012</option>
+ 			<option> 2013</option>
+ 			<option> 2014</option>
+ 			<option> 2015</option>
+ 			<option> 2016</option>
+ 			<option> 2017</option>
+ 			<option> 2018</option>
+ 			<option> 2019</option>
+ 			<option> 2020</option>
+ 			<option> 2021</option>
+ 			<option> 2022</option>
+ 			<option> 2023</option>
+ 			<option> 2024</option>
+ 		    </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>EMAIL</th>
+                    <td>
+                        <input type="text" name="email" required>
+                        <span class="error" id="emailError"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>MOBILE NUMBER</th>
+                    <td>
+                        <input type="text" name="mobileNumber" maxlength="10" required>
+                        <span class="error" id="mobileError"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>GENDER</th>
+                    <td>
+                        <input type="radio" value="MALE" name="gender"> MALE
+                        <input type="radio" value="FEMALE" name="gender"> FEMALE
+                    </td>
+                </tr>
+                <tr>
+                    <th>ADDRESS</th>
+                    <td><textarea name="address" rows="4" cols="50"></textarea></td>
+                </tr>
+                <tr>
+                    <th>CITY</th>
+                    <td><input type="text" maxlength="30"></td>
+                </tr>
+                <tr>
+                    <th>PINCODE</th>
+                    <td><input type="text" maxlength="6"></td>
+                </tr>
+                <tr>
+                    <th>STATE</th>
+                    <td><input type="text" maxlength="30"></td>
+                </tr>
+                <tr>
+                    <th>COUNTRY</th>
+                    <td>
+                        <select name="country" style="width:40%">
+                            <option value="india">INDIA</option>
+                            <option value="usa">USA</option>
+                            <option value="other">OTHER</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>HOBBIES</th>
+                    <td>
+                        <input type="checkbox" name="hobbies" value="drawing"> DRAWING
+                        <input type="checkbox" name="hobbies" value="singing"> SINGING
+                        <input type="checkbox" name="hobbies" value="dancing"> DANCING
+                        <input type="checkbox" name="hobbies" value="sketching"> SKETCHING
+                        OTHERS: <input type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>QUALIFICATION</th>
+                    <td>
+                        <table border=0>
+                            <tr>
+                                <th>S I NO.EXAMINATION</th>
+                                <th>BOARD</th>
+                                <th>PERCENTAGE</th>
+                                <th>YEAR OF PASSING</th>
+                            </tr>
+                            <tr>
+                                <td>1 class X</td>
+                                <td><input type="text"></td>
+                                <td><input type="text"></td>
+                                <td><input type="text"></td>
+                            </tr>
+                            <tr>
+                                <td>2 class X</td>
+                                <td><input type="text"></td>
+                                <td><input type="text"></td>
+                                <td><input type="text"></td>
+                            </tr>
+                            <tr>
+                                <td>3 GRADUATION</td>
+                                <td><input type="text"></td>
+                                <td><input type="text"></td>
+                                <td><input type="text"></td>
+                            </tr>
+                            <tr>
+                                <td>4 MASTERS</td>
+                                <td><input type="text"></td>
+                                <td><input type="text"></td>
+                                <td><input type="text"></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th>COURSE APPLIED FOR</th>
+                    <td>
+                        <input type="radio" value="MCA" name="course"> MCA
+                        <input type="radio" value="MSc" name="course"> MSc
+                        <input type="radio" value="M TECH" name="course"> M TECH
+                        <input type="radio" value="PHD" name="course"> PHD
+                    </td>
+                </tr>
+                <tr>
+                    <th>TYPE YOUR PASSWORD</th>
+                    <td><input type="password" maxlength="30"></td>
+                </tr>
+                <tr>
+                    <th>DATE OF TC</th>
+                    <td><input type="date"></td>
+                </tr>
+                <tr>
+                    <th>UPLOAD A PHOTO</th>
+                    <td><input type="file" name="photo"></td>
+                </tr>
+                <tr>
+                    <th colspan=2>
+                        <input type="submit" value="submit">
+                        <input type="reset" value="reset">
+                    </th>
+                </tr>
+            </table>
+        </form>
+    </center>
+</body>
+</html>
+
