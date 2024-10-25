@@ -40,7 +40,7 @@
             const mobileNumber = document.forms[0]["mobileNumber"].value;
             const mobilePattern = /^\d{10}$/;
             if (!mobilePattern.test(mobileNumber)) {
-                document.getElementById('mobileError').textContent = ' Invalid mobile number!';
+                document.getElementById('mobileError').textContent = ' Please enter a valid mobile number!';
                 isValid = false;
             }
 
