@@ -18,14 +18,15 @@
             let isValid = true;
 
             const firstName = document.forms[0]["firstName"].value;
-            if (!firstName) {
-                document.getElementById('firstNameError').textContent = 'First Name is required.';
+            const namepattern=/^[a-zA-Z\s]{1,30}$/;
+            if (!namepattern.test(firstName)) {
+                document.getElementById('firstNameError').textContent = 'NAME MUST BE LETTERS';
                 isValid = false;
             }
 
             const lastName = document.forms[0]["lastName"].value;
             if (!lastName) {
-                document.getElementById('lastNameError').textContent = 'Last Name is required.';
+                document.getElementById('lastNameError').textContent = 'NAME MUST BE LETTERS';
                 isValid = false;
             }
 
