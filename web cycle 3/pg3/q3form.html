@@ -40,7 +40,7 @@
             const mobileNumber = document.forms[0]["mobileNumber"].value;
             const mobilePattern = /^\d{10}$/;
             if (!mobilePattern.test(mobileNumber)) {
-                document.getElementById('mobileError').textContent = 'Mobile Number must be 10 digits.';
+                document.getElementById('mobileError').textContent = ' Invalid mobile number!';
                 isValid = false;
             }
 
