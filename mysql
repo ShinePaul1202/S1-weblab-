@@ -1,0 +1,370 @@
+exp2
+
+CREATE DATABASE user_database;
+USE user_database;
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL
+);
+
+INSERT INTO users (username, password) VALUES ('testuser', 'testpassword');
+
+
+db_connection.php
+
+<?php
+// db_connection.php: Handles database connection
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "user_database";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+?>
+
+
+index.php
+
+<html> 
+<head>
+    <title>Login</title>
+</head>
+<body>
+    <h2>Login Page</h2>
+    <form action="welcome.php" method="POST">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br>
+        <button type="submit">Login</button>
+    </form>
+</body>
+</html>
+
+
+welcome.php
+
+<?php
+include 'db_connection.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    $stmt = $conn->prepare("SELECT * FROM users WHERE username = ? AND password = ?");
+    $stmt->bind_param("ss", $username, $password);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        echo "<h1>Welcome, " . htmlspecialchars($username) . "!</h1>";
+    } else {
+        echo "<h1>Invalid credentials. Please <a href='index.php'>try again</a>.</h1>";
+    }
+
+    $stmt->close();
+    $conn->close();
+}
+?>
+
+
+
+
+exp 3
+
+CREATE DATABASE student_db;
+USE student_db;
+
+CREATE TABLE students (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(30) NOT NULL,
+    last_name VARCHAR(30) NOT NULL,
+    dob DATE NOT NULL,
+    email VARCHAR(50) UNIQUE NOT NULL,
+    mobile VARCHAR(10) NOT NULL,
+    gender ENUM('MALE', 'FEMALE') NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
+
+
+register.php
+
+<?php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $conn = new mysqli('localhost', 'root', '', 'student_db');
+
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    $first_name = $_POST['first_name'];
+    $last_name = $_POST['last_name'];
+    $dob = $_POST['dob'];
+    $email = $_POST['email'];
+    $mobile = $_POST['mobile'];
+    $gender = $_POST['gender'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+
+    $sql = "INSERT INTO students (first_name, last_name, dob, email, mobile, gender, password)
+            VALUES ('$first_name', '$last_name', '$dob', '$email', '$mobile', '$gender', '$password')";
+
+    if ($conn->query($sql) === TRUE) {
+        echo "Registration successful! <a href='login.php'>Login here</a>";
+    } else {
+        echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+
+    $conn->close();
+}
+?>
+
+
+login.php
+
+<?php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $conn = new mysqli('localhost', 'root', '', 'student_db');
+
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    $sql = "SELECT * FROM students WHERE email = '$email'";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        if (password_verify($password, $row['password'])) {
+            setcookie('student_email', $email, time() + (86400 * 30), "/");
+            header("Location: display.php");
+        } else {
+            echo "Invalid password.";
+        }
+    } else {
+        echo "No user found with this email.";
+    }
+
+    $conn->close();
+}
+?>
+
+<html>
+<body>
+    <h2>Login</h2>
+    <form method="POST">
+        Email: <input type="email" name="email" required><br>
+        Password: <input type="password" name="password" required><br>
+        <button type="submit">Login</button>
+    </form>
+</body>
+</html>
+
+<html>
+<body>
+    <h2>Student Registration</h2>
+    <form method="POST">
+        First Name: <input type="text" name="first_name" maxlength="30" required><br>
+        Last Name: <input type="text" name="last_name" maxlength="30" required><br>
+        Date of Birth: <input type="date" name="dob" required><br>
+        Email: <input type="email" name="email" required><br>
+        Mobile: <input type="text" name="mobile" maxlength="10" required><br>
+        Gender: 
+        <input type="radio" name="gender" value="MALE" required> Male
+        <input type="radio" name="gender" value="FEMALE" required> Female<br>
+        Password: <input type="password" name="password" maxlength="30" required><br>
+        <button type="submit">Register</button>
+    </form>
+</body>
+</html>
+
+
+display.php
+
+<?php
+if (!isset($_COOKIE['student_email'])) {
+    header("Location: login.php");
+    exit();
+}
+
+$conn = new mysqli('localhost', 'root', '', 'student_db');
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+$email = $_COOKIE['student_email'];
+
+$sql = "SELECT * FROM students WHERE email = '$email'";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    echo "<h2>Welcome, " . $row['first_name'] . " " . $row['last_name'] . "!</h2>";
+    echo "<p>Email: " . $row['email'] . "</p>";
+    echo "<p>Mobile: " . $row['mobile'] . "</p>";
+    echo "<p>Gender: " . $row['gender'] . "</p>";
+    echo "<p>Date of Birth: " . $row['dob'] . "</p>";
+} else {
+    echo "No data found.";
+}
+
+$conn->close();
+?>
+
+
+exp 4
+
+CREATE DATABASE student_db;
+USE student_db;
+CREATE TABLE students (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    email VARCHAR(100),
+    password VARCHAR(255),
+    dob DATE,
+    gender ENUM('Male', 'Female', 'Other')
+);
+
+index.php
+
+<?php
+session_start();
+
+if (isset($_SESSION['user_id'])) {
+    header('Location: profile.php');
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    // Connect to the database
+    $conn = mysqli_connect('localhost', 'your_username', 'your_password', 'student_db');
+
+    // Prepare and execute the query
+    $stmt = $conn->prepare("SELECT id, first_name, last_name FROM students WHERE email = ? AND password = ?");
+    $stmt->bind_param("ss", $email, $password);
+    $stmt->execute();
+    $stmt->bind_result($id, $firstName, $lastName);
+
+    if ($stmt->fetch()) {
+        $_SESSION['user_id'] = $id;
+        $_SESSION['user_name'] = $firstName . ' ' . $lastName;
+        header('Location: profile.php');
+        exit();
+    } else {
+        $error_message = "Invalid email or password.";
+    }
+
+    $stmt->close();
+    $conn->close();
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+</head>
+<body>
+    <h2>Login</h2>
+    <?php if (isset($error_message)) { ?>
+        <p style="color: red;"><?php echo $error_message; ?></p>
+    <?php } ?>
+    <form method="post">
+        <label for="email">Email:</label>
+        <input type="email" name="email" required><br>
+        <label for="password">Password:</label>
+        <input type="password" name="password" required><br>
+        <input type="submit" value="Login">
+    </form>
+</body>
+</html>
+
+
+register.php
+
+<?php
+session_start();
+
+if (isset($_SESSION['user_id'])) {
+    header('Location: profile.php');
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $firstName = $_POST['first_name'];
+    $lastName = $_POST['last_name'];
+    $email = $_POST['email'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash the password
+    $dob = $_POST['dob'];
+    $gender = $_POST['gender'];
+
+    // Connect to the database
+    $conn = mysqli_connect('localhost', 'your_username', 'your_password', 'student_db');
+
+    // Prepare and execute the query
+    $stmt = $conn->prepare("INSERT INTO students (first_name, last_name, email, password, dob, gender) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssss", $firstName, $lastName, $email, $password, $dob, $gender);
+    $stmt->execute();
+
+    if ($stmt->affected_rows > 0) {
+        header('Location: index.php?registration_success=1');
+        exit();
+    } else {
+        $error_message = "Registration failed. Please try again.";
+    }
+
+    $stmt->close();
+    $conn->close();
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registration</title>
+</head>
+<body>
+    <h2>Registration</h2>
+    <?php if (isset($error_message)) { ?>
+        <p style="color: red;"><?php echo $error_message; ?></p>
+    <?php } ?>
+    <form method="post">
+        <input type="submit" value="Register">
+    </form>
+</body>
+</html>
+
+profile.php
+
+<?php
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    header('Location: index.php');
+    exit();
+}
+
+// Connect to the database
+$conn = mysqli_connect('localhost', 'your_username', 'your_password', 'student_db');
+
+$user_id = $_SESSION['user_id'];
+$stmt = $conn->prepare("SELECT * FROM students WHERE id = ?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+
+// Display user information
+echo "Welcome, " . $user['first_name'] . " " . $user['last_name'];
+// ... display other user details
